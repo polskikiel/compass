@@ -17,7 +17,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-//go:generate mockery -name=Client
 type Client interface {
 	GetAuthorizationToken() (Token, error)
 	WaitForCredentials() error
@@ -57,7 +56,7 @@ func (c *oauthClient) WaitForCredentials() error {
 		}, secret)
 		// it fails on connection-refused error on first call and it restarts our application.
 		if err != nil {
-			log.Warnf("secret %s not found", c.secretName)
+			log.Warnf("secret %s not found with error: %v", c.secretName, err)
 			return false, nil
 		}
 		return true, nil
