@@ -235,6 +235,13 @@ func (c *Client) executeRequest(method, url string, body io.Reader, responseBody
 	request.SetBasicAuth(c.brokerConfig.Auth.Username, c.brokerConfig.Auth.Password)
 	request.Header.Set("X-Broker-API-Version", "2.14")
 
+	//set only on deprovision action
+	request.Form.Set("service_id", kymaClassID)
+	request.Form.Set("plan_id", azurePlanID)
+	if c.brokerConfig.ProvisionGCP {
+		request.Form.Set("plan_id", gcpPlanID)
+	}
+
 	resp, err := c.client.Do(request)
 	if err != nil {
 		return errors.Wrapf(err, "while executing request URL: %s", url)
